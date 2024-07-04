@@ -1,0 +1,30 @@
+{
+  "name": "Virtual Assistant",
+  "roomGuid": "6765c52b-3ad6-4fb0-9030-2c9a05dc4731",
+  "roomserver": {
+    "joinExisting": true,
+    "uri": "192.168.0.50",
+    "tcp": {
+      "port": 8009
+    },
+    "wss": {
+      "port": 8010,
+      "cert": "./certs/cert.pem",
+      "key": "./certs/key.pem"
+    }
+  },
+  "status": {
+    "port": 8011,
+    "cert": "./certs/cert.pem",
+    "key": "./certs/key.pem",
+    "apikeys": []
+  },
+  "iceservers": [
+    {
+      "uri": "stun:stun.l.google.com:19302"
+    }
+  ],
+  "preprompt": "write a script in C# for Unity, so a class that inherits from MonoBehaviour. In your answer always write code between tag ```csharp and tag ```",
+  "prompt_suffix": " Use a Component name that does not conflict with previous used or default Component names from Unity. Do not use interaction from devices such as keyboard or mouse. Use ASCII code and not unicode in the answer. Create only one MonoBehaviour. If it is used 'this' or 'that' the object is still present. If a new instance of an object is created it should have parent 'transform', and infer the shape to primitive geometries present in Unity. Put movement only if required before. Put always the tag 'game'",
+  "configurationComplete": true
+}
