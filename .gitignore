@@ -12,3 +12,9 @@ config/local.json
 .AppleDouble
 .LSOverride
 *.icloud
+
+# not free
+Unity/Assets/RoslynCSharp/
+
+# Unity meta
+*.meta
