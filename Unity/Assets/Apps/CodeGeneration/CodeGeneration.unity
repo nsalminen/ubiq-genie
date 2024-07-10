@@ -9416,8 +9416,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1515582875}
   - component: {fileID: 1515582876}
+  - component: {fileID: 1515582879}
   - component: {fileID: 1515582878}
-  - component: {fileID: 1515582877}
   m_Layer: 0
   m_Name: CodeGeneration Agent Manager
   m_TagString: Untagged
@@ -9455,7 +9455,7 @@ MonoBehaviour:
   audioSource: {fileID: 324895636}
   assistantController: {fileID: 324895633}
   volume: {fileID: 324895634}
---- !u!114 &1515582877
+--- !u!114 &1515582878
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -9464,7 +9464,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1515582874}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 47b617cf2fff2e64ab6bdc8faadfb9b5, type: 3}
+  m_Script: {fileID: 11500000, guid: 8882eb5ce5010d845a72c8f5d289b597, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   assemblyReferences:
@@ -9482,7 +9482,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: d63caa786bb07a04dbed0198792760d9, type: 2}
   - {fileID: 11400000, guid: e877e94ac5f9c7c4192a879696d5e5d8, type: 2}
   - {fileID: 11400000, guid: e926a68b2b20b4a49b56d48786be169b, type: 2}
---- !u!114 &1515582878
+--- !u!114 &1515582879
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -9491,7 +9491,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1515582874}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8733858806c8b58458cff37acf1684f4, type: 3}
+  m_Script: {fileID: 11500000, guid: cb98df72ac3bd3d4dab691e76a21bec3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   rayInteractor: {fileID: 1595388568}
@@ -9501,7 +9501,7 @@ MonoBehaviour:
   audioSource: {fileID: 324895636}
   assistantController: {fileID: 324895633}
   volume: {fileID: 324895634}
-  testRoslyn: {fileID: 1515582877}
+  testRoslyn: {fileID: 1515582878}
   targetObject: {fileID: 0}
   sceneController: {fileID: 639733851}
 --- !u!114 &1595388568 stripped
