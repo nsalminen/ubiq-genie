@@ -202,6 +202,7 @@ public class SelectionUnderstandingManager : MonoBehaviour
     {
         int originalLayer = targetObject.layer;
         selected4Query = targetObject;
+
         // Create a new Camera GameObject
         GameObject cameraObject = new GameObject("TempCamera");
         Camera camera = cameraObject.AddComponent<Camera>();
@@ -217,19 +218,23 @@ public class SelectionUnderstandingManager : MonoBehaviour
         // Change the target object's layer to the screenshot layer
         SetLayerRecursively(targetObject, screenshotLayer);
 
+        // Create a RenderTexture
+        RenderTexture renderTexture = new RenderTexture(Screen.width, Screen.height, 24);
+        camera.targetTexture = renderTexture;
+
         // Wait for end of frame to ensure everything is rendered
         yield return new WaitForEndOfFrame();
 
-        // Take a screenshot
-        RenderTexture renderTexture = new RenderTexture(Screen.width, Screen.height, 24);
-        camera.targetTexture = renderTexture;
-        Texture2D screenshot = new Texture2D(Screen.width, Screen.height, TextureFormat.RGB24, false);
-        camera.Render();
+        // Render the camera's view to the RenderTexture
         RenderTexture.active = renderTexture;
+        camera.Render();
+
+        // Create a Texture2D to hold the screenshot
+        Texture2D screenshot = new Texture2D(Screen.width, Screen.height, TextureFormat.RGB24, false);
         screenshot.ReadPixels(new Rect(0, 0, Screen.width, Screen.height), 0, 0);
         screenshot.Apply();
 
-        // Clean up
+        // Reset the RenderTexture and clean up
         camera.targetTexture = null;
         RenderTexture.active = null;
         Destroy(renderTexture);
@@ -244,25 +249,26 @@ public class SelectionUnderstandingManager : MonoBehaviour
         File.WriteAllBytes(filePath, screenshotBytes);
 
         Debug.Log($"Screenshot taken and saved to {filePath}");
-        
-        context.SendJson(new SelectionUnderstandingMessage { selection = currentSelection, peer = roomClient.Me.uuid, triggerHeld = triggerHeld, image = screenshotBytes});
+
+        // Send screenshot data to the context
+        context.SendJson(new SelectionUnderstandingMessage
+        {
+            selection = currentSelection,
+            peer = roomClient.Me.uuid,
+            triggerHeld = triggerHeld,
+            image = screenshotBytes
+        });
     }
 
     private void SetLayerRecursively(GameObject obj, int newLayer)
     {
-        if (obj == null)
-        {
-            return;
-        }
-
+        if (obj == null) return;
         obj.layer = newLayer;
 
         foreach (Transform child in obj.transform)
         {
-            if (child != null)
-            {
-                SetLayerRecursively(child.gameObject, newLayer);
-            }
+            if (child == null) continue;
+            SetLayerRecursively(child.gameObject, newLayer);
         }
     }
 }
