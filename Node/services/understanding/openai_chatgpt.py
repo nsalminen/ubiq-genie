@@ -17,7 +17,7 @@ def encode_image_to_base64(image_path):
         img_base64 = base64.b64encode(image_file.read()).decode('utf-8')
     return f"data:image/png;base64,{img_base64}"
 
-def request_response(image_path=None):
+def request_response(image_path=None, args = ""):
     global client
 
     if image_path:
@@ -27,7 +27,7 @@ def request_response(image_path=None):
             {
                 "role": "user",
                 "content": [
-                    {"type": "text", "text": "Any text message"},
+                    {"type": "text", "text": args.preprompt},
                     {"type": "image_url", "image_url": {"url": img_str}}
                 ],
             }
@@ -53,8 +53,8 @@ def listen_for_messages(args):
             image_data = line.strip()  # The received image data in byte array format
 
             image_path = save_image(image_data)
-            response_content = request_response(image_path)
-            print(response_content)
+            response_content = request_response(image_path, args)
+            
             print(">" + response_content.content)
         except KeyboardInterrupt:
             break

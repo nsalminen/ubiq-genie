@@ -15,6 +15,3 @@ config/local.json
 
 # not free
 Unity/Assets/RoslynCSharp/
-
-# Unity meta
-*.meta

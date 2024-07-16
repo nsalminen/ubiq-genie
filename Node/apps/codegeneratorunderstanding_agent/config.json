@@ -26,7 +26,7 @@
   ],
   "preprompt": "write a script in C# for Unity, so a class that inherits from MonoBehaviour. In your answer always write code between tag ```csharp and tag ```",
   "prompt_suffix": " Use a Component name that does not conflict with previous used or default Component names from Unity. Do not use interaction from devices such as keyboard or mouse. Use ASCII code and not unicode in the answer. Create only one MonoBehaviour. If it is used 'this' or 'that' the object is still present. If a new instance of an object is created it should have parent 'transform', and infer the shape to primitive geometries present in Unity. Put movement only if required before. Put always the tag 'game'",
-  "functionprompt": "which object is visible in this synthetic scenario? tell only the object you see, do not describe the background. Write always a list of possible functions (minimum 2 , maximum 6) that can be associated to such an object - for example if it is a tv, can be switch on, if it is more abstract you can attach a movement. The final output should be the name of the object followed by ':' and followed by a coma separated list of possible functions associated to such an object.",
+  "functionprompt": "which object is visible in this scene? which functionalities (from 2 minimum to 6 maximum) you can give for it (for example , move, switch on/off, etc).Write an answer that is a json with the name of the object (objectName in JSON) and a dictionary where the keys are the functionalities (functionalities in JSON) and the values are the best input that describe the function if you need to tell to somebody to implement with a script.",
   "functionprompt_suffix": "",
   "configurationComplete": true
 }

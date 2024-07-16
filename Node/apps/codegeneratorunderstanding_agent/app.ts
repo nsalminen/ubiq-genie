@@ -46,7 +46,7 @@ export class CodeGenerationUnderstandingAgent extends ApplicationController {
         // A CodeGenerationService to generate text based on text
         this.components.codeGenerationService = new CodeGenerationService(this.scene);
         
-        this.components.selectionReceiver = new MessageReader(this.scene, 97);
+        this.components.selectionReceiver = new MessageReader(this.scene, 94);
         this.components.understanding = new UnderstandingService(this.scene);
 
         this.isGenerating = false;
@@ -82,15 +82,14 @@ export class CodeGenerationUnderstandingAgent extends ApplicationController {
             console.log("---- Understanding");
             // Parse target peer from the response (Agent -> TargetPeer: Message)
             if (response.startsWith(">")) {
-                console.log(" -> Functions:: " + response);
+                //console.log(" -> Functions:: " + response);
                 const cleaned_response = response.slice(1);
                 
-                /*this.scene.send(94, {
-                        type: "CodeGenerated",
-                        peer: identifier,
-                        data: cleaned_response,
-                    });
-                this.isGenerating = false;*/
+                this.scene.send(new NetworkId(94), {
+                    type: "Detection",
+                    peer: identifier,
+                    data: cleaned_response,
+                });
             }
         });
     
@@ -100,7 +99,9 @@ export class CodeGenerationUnderstandingAgent extends ApplicationController {
             const sampleBuffer = Buffer.from(data.samples.buffer);
 
             // Send the audio data to the transcription service and the audio recording service
-            this.components.speech2text?.sendToChildProcess(uuid, sampleBuffer);
+            if (this.roomClient.peers.get(uuid) !== undefined) {
+                this.components.speech2text?.sendToChildProcess(uuid, sampleBuffer);
+            }
         });
 
         // Step 2: When we receive a response from the transcription service, we send it to the text generation service

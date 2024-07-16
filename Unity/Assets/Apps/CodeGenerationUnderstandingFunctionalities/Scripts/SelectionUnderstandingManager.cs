@@ -1,23 +1,69 @@
 using Ubiq.Messaging;
 using Ubiq.Rooms;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.XR.Interaction.Toolkit;
 using UnityEngine.InputSystem;
 using System.Collections;
+using System.Collections.Generic;
 using System.IO;
+using System;
+using TinyJson;
+using Unity.VisualScripting;
 
 public class SelectionUnderstandingManager : MonoBehaviour
 {
     private NetworkContext context;
     private RoomClient roomClient;
-    private NetworkId networkId = new NetworkId(97);
+    private NetworkId networkId = new NetworkId(94);
     public XRRayInteractor rayInteractor;
     public ActionBasedController actionBasedController;
     private string lastSelection = "";
     private string currentSelection = "";
     private bool triggerHeld = false;
-
+    
+    private GameObject selected4Query;
+    public GameObject menuPrefab;
+    public GameObject funcPrefab;
+    
     private int screenshotLayer = 8; // Example layer for screenshot (ensure this layer is set in Unity)
+    
+    public static Transform FindTransform(Transform parent, string name)
+    {
+        if (parent.name.Equals(name)) return parent;
+        foreach (Transform child in parent)
+        {
+            Transform result = FindTransform(child, name);
+            if (result != null) return result;
+        }
+        return null;
+    }
+    
+    // Function to create and attach the menu
+    public void CreateAndAttachMenu(string objectName, Dictionary<string, string> functionalities, GameObject selectedObject)
+    {
+        GameObject menuInstance = Instantiate(menuPrefab);
+        menuInstance.transform.SetParent(selectedObject.transform, false);
+        
+        //where to add
+        Transform func_root = FindTransform(menuInstance.transform, "Content");
+        Transform name = FindTransform(menuInstance.transform, "ObjectName");
+        name.GetComponent<UnityEngine.UI.Text>().text = objectName;
+        
+        // Populate the functionalities in the UI
+        foreach (KeyValuePair<string, string> functionality in functionalities)
+        {
+            GameObject funcInstance = Instantiate(funcPrefab);
+            funcInstance.transform.SetParent(func_root, false);
+            UnityEngine.UI.Text buttonText = FindTransform(funcInstance.transform, "Text").gameObject.GetComponent<UnityEngine.UI.Text>();
+            buttonText.text = functionality.Key;
+            FunctionalityDescription item = funcInstance.GetComponent<FunctionalityDescription>(); 
+            item.objectName = objectName;
+            item.functionalityName = functionality.Key;
+            item.functionalityDescription = functionality.Value;
+        }
+
+    }
 
     void Start()
     {
@@ -70,16 +116,92 @@ public class SelectionUnderstandingManager : MonoBehaviour
         public string peer;
         public bool triggerHeld;
         public byte[] image;
+    };
+    
+    struct SelectionMessage
+    {
+        public string type;
+        public string peer;
+        public string data;
+    };
+    
+    public class Functionality
+    {
+        public string objectName { get; set; }
+        public Dictionary<string, string> functionalities { get; set; }
+    }
+    
+    static string RemoveTags(string input, string initialTag, string endingTag)
+    {
+        // Find the index of the initial tag
+        int initialTagIndex = input.IndexOf(initialTag);
+        if (initialTagIndex == -1)
+        {
+            throw new ArgumentException("Initial tag not found.");
+        }
+
+        // Find the index of the ending tag
+        int endingTagIndex = input.LastIndexOf(endingTag);
+        if (endingTagIndex == -1)
+        {
+            throw new ArgumentException("Ending tag not found.");
+        }
+
+        // Calculate the start index of the JSON content
+        int jsonStartIndex = initialTagIndex + initialTag.Length;
+
+        // Calculate the length of the JSON content
+        int jsonLength = endingTagIndex - jsonStartIndex;
+
+        // Extract the JSON content
+        string json = input.Substring(jsonStartIndex, jsonLength).Trim();
+
+        return json;
     }
 
     public void ProcessMessage(ReferenceCountedSceneGraphMessage data)
     {
-    }
+        // Try to parse the data as a message, if it fails, then we have received the audio data
+        SelectionMessage message;
+        try
+        {
+            message = data.FromJson<SelectionMessage>();
+            string type = message.type;
+            string peer = message.peer;
+            string data_in = message.data;
+            
+            string initialTag = "```json";
+            string endingTag = "```";
 
+            data_in = RemoveTags(data_in, initialTag, endingTag);
+            var res = data_in.FromJson<Functionality>();
+
+            // Extract the object name
+            string objectName = res.objectName;
+
+            // Extract the functionalities into a dictionary
+            Dictionary<string, string> functionalities = res.functionalities;
+            
+            
+            Debug.Log(objectName);
+            foreach (var functionality in functionalities)
+            {
+                Debug.Log($"{functionality.Key}: {functionality.Value}");
+            }
+            
+            CreateAndAttachMenu(objectName, functionalities, selected4Query);
+            return;
+        }
+        catch (Exception e)
+        {
+            Debug.Log("Not handled");
+        }
+    }
+    
     private IEnumerator TakePicture(GameObject targetObject)
     {
         int originalLayer = targetObject.layer;
-
+        selected4Query = targetObject;
         // Create a new Camera GameObject
         GameObject cameraObject = new GameObject("TempCamera");
         Camera camera = cameraObject.AddComponent<Camera>();
