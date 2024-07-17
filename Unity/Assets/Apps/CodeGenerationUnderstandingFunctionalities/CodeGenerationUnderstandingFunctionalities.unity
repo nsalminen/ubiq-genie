@@ -135,32 +135,44 @@ PrefabInstance:
       value: Lamp
       objectReference: {fileID: 0}
     - target: {fileID: 400018, guid: 0882de763878e434883f657c2758a22b, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 2.7324
+      objectReference: {fileID: 0}
+    - target: {fileID: 400018, guid: 0882de763878e434883f657c2758a22b, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 2.7324
+      objectReference: {fileID: 0}
+    - target: {fileID: 400018, guid: 0882de763878e434883f657c2758a22b, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 2.7324
+      objectReference: {fileID: 0}
+    - target: {fileID: 400018, guid: 0882de763878e434883f657c2758a22b, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0.95
+      value: -1.0269407
       objectReference: {fileID: 0}
     - target: {fileID: 400018, guid: 0882de763878e434883f657c2758a22b, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 0.090874
       objectReference: {fileID: 0}
     - target: {fileID: 400018, guid: 0882de763878e434883f657c2758a22b, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: -0.0019258407
       objectReference: {fileID: 0}
     - target: {fileID: 400018, guid: 0882de763878e434883f657c2758a22b, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 1
+      value: -0.01709106
       objectReference: {fileID: 0}
     - target: {fileID: 400018, guid: 0882de763878e434883f657c2758a22b, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 400018, guid: 0882de763878e434883f657c2758a22b, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0
+      value: -0.99985397
       objectReference: {fileID: 0}
     - target: {fileID: 400018, guid: 0882de763878e434883f657c2758a22b, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 400018, guid: 0882de763878e434883f657c2758a22b, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -168,7 +180,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 400018, guid: 0882de763878e434883f657c2758a22b, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
+      value: -181.959
       objectReference: {fileID: 0}
     - target: {fileID: 400018, guid: 0882de763878e434883f657c2758a22b, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
@@ -230,6 +242,7 @@ MonoBehaviour:
   actionBasedController: {fileID: 1886178801}
   menuPrefab: {fileID: 4649727490189479777, guid: bca3af63a51655c4cb8a658a5b3b61a1, type: 3}
   funcPrefab: {fileID: 3717964254020348360, guid: 4247f692dc2454f49a6cdef871dd663f, type: 3}
+  codegenManager: {fileID: 1515582880}
 --- !u!1 &232221576
 GameObject:
   m_ObjectHideFlags: 0
@@ -9546,7 +9559,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1515582875
 Transform:
   m_ObjectHideFlags: 0
@@ -9604,7 +9617,7 @@ MonoBehaviour:
   rayInteractor: {fileID: 1595388568}
   networkId:
     a: 0
-    b: 94
+    b: 99
   audioSource: {fileID: 324895636}
   assistantController: {fileID: 324895633}
   volume: {fileID: 324895634}

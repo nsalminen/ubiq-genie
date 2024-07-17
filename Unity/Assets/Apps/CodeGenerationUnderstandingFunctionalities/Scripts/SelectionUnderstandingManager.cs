@@ -25,6 +25,7 @@ public class SelectionUnderstandingManager : MonoBehaviour
     private GameObject selected4Query;
     public GameObject menuPrefab;
     public GameObject funcPrefab;
+    public CodeGenerationUnderstandingFunctionalitiesManager codegenManager;
     
     private int screenshotLayer = 8; // Example layer for screenshot (ensure this layer is set in Unity)
     
@@ -57,12 +58,29 @@ public class SelectionUnderstandingManager : MonoBehaviour
             funcInstance.transform.SetParent(func_root, false);
             UnityEngine.UI.Text buttonText = FindTransform(funcInstance.transform, "Text").gameObject.GetComponent<UnityEngine.UI.Text>();
             buttonText.text = functionality.Key;
-            FunctionalityDescription item = funcInstance.GetComponent<FunctionalityDescription>(); 
+            FunctionalityDescription item = funcInstance.GetComponent<FunctionalityDescription>();
+            item.go = selectedObject;
             item.objectName = objectName;
             item.functionalityName = functionality.Key;
             item.functionalityDescription = functionality.Value;
+            
+            //here@@ add a structure
+            
+            // Add OnClick listener
+            Button button = funcInstance.GetComponent<Button>();
+            button.onClick.AddListener(() => OnFunctionalityButtonClicked(objectName, functionality.Key, functionality.Value, selectedObject));
         }
-
+    }
+    
+    // Method to handle the button click event
+    private void OnFunctionalityButtonClicked(string objectname, string functionalityKey, string functionalityDescription, GameObject selection)
+    {
+        Debug.Log($"A {objectname} !");
+        Debug.Log($"B {functionalityKey} !");
+        Debug.Log($"C {functionalityDescription} !");
+        Debug.Log($"D {selection.name} !");
+        // Implement additional logic here
+        codegenManager.SendDescription(functionalityDescription, objectname, selection);
     }
 
     void Start()

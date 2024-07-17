@@ -26,7 +26,7 @@ public class CodeGenerationUnderstandingFunctionalitiesManager : MonoBehaviour
     }
     
     public XRRayInteractor rayInteractor;
-    public NetworkId networkId = new NetworkId(97);
+    public NetworkId networkId = new NetworkId(99);
     private NetworkContext context;
 
     public InjectableAudioSource audioSource;
@@ -58,7 +58,7 @@ public class CodeGenerationUnderstandingFunctionalitiesManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        while(speechUnits.Count > 0)
+        /*while(speechUnits.Count > 0)
         {
             if (Time.time > speechUnits[0].endTime)
             {
@@ -88,7 +88,23 @@ public class CodeGenerationUnderstandingFunctionalitiesManager : MonoBehaviour
         else
         {
             targetObject = null;
-        }
+        }*/
+    }
+    
+    struct CodeGenerationQuery
+    {
+        public string objectname;
+        public string data;
+    };
+
+    public void SendDescription(string description, string objectname, GameObject objectSelection)
+    {
+        targetObject = objectSelection;
+        context.SendJson(new CodeGenerationQuery
+        {
+            objectname = objectname,
+            data = description,
+        });
     }
 
     public void ProcessMessage(ReferenceCountedSceneGraphMessage data)

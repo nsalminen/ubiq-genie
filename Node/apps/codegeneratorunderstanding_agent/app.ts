@@ -15,6 +15,7 @@ export class CodeGenerationUnderstandingAgent extends ApplicationController {
         speech2text?: SpeechToTextService;
         codeGenerationService?: CodeGenerationService;
         selectionReceiver?: MessageReader;
+        functionalityCoding?: MessageReader;
         understanding?: UnderstandingService;
     } = {};
     isGenerating: boolean = false;
@@ -47,6 +48,7 @@ export class CodeGenerationUnderstandingAgent extends ApplicationController {
         this.components.codeGenerationService = new CodeGenerationService(this.scene);
         
         this.components.selectionReceiver = new MessageReader(this.scene, 94);
+        this.components.functionalityCoding = new MessageReader(this.scene, 99);
         this.components.understanding = new UnderstandingService(this.scene);
 
         this.isGenerating = false;
@@ -54,6 +56,7 @@ export class CodeGenerationUnderstandingAgent extends ApplicationController {
     }
 
     definePipeline() {
+        //this service receive the image and send to LLM 
         this.components.selectionReceiver.on('data', (data: any) => {
             const selectionData = JSON.parse(data.message.toString());
             const peerUUID = selectionData.peer;
@@ -61,21 +64,9 @@ export class CodeGenerationUnderstandingAgent extends ApplicationController {
             const triggerHeld = selectionData.triggerHeld; // True when trigger is held
             console.log("arrived image");
             this.components.understanding?.sendToChildProcess('default', selectionData.image + '\n'); //@@from here how to deal with image to the service FIRST
-            /*const triggerReleased =
-                this.lastPeerSelection[peerUUID] &&
-                this.lastPeerSelection[peerUUID].triggerHeld &&
-                triggerHeld === false;
-
-            this.lastPeerSelection[peerUUID] = {
-                time: new Date().getTime(),
-                message: selection,
-                triggerHeld: triggerHeld,
-                triggerReleased: triggerReleased,
-            };*/
-
-            // console.log(this.lastPeerSelection[peerUUID]);
         });
         
+        //this service retrieve information about object and functionalities
         this.components.understanding?.on('data', (data: Buffer, identifier: string) => {
             const response = data.toString();
             console.log('Received text generation response from child process ' + identifier + ': ' + response);
@@ -95,17 +86,18 @@ export class CodeGenerationUnderstandingAgent extends ApplicationController {
     
         // Step 1: When we receive audio data from a peer we send it to the transcription service and recording service
         this.components.mediaReceiver?.on('audio', (uuid: string, data: RTCAudioData) => {
+            /*
             // Convert the Int16Array to a Buffer
             const sampleBuffer = Buffer.from(data.samples.buffer);
 
             // Send the audio data to the transcription service and the audio recording service
             if (this.roomClient.peers.get(uuid) !== undefined) {
                 this.components.speech2text?.sendToChildProcess(uuid, sampleBuffer);
-            }
+            }*/
         });
 
         // Step 2: When we receive a response from the transcription service, we send it to the text generation service
-        this.components.speech2text?.on('data', (data: Buffer, identifier: string) => {
+        /*this.components.speech2text?.on('data', (data: Buffer, identifier: string) => {
             // We obtain the peer object from the room client using the identifier
             const peer = this.roomClient.peers.get(identifier);
             const peerName = peer?.properties.get('ubiq.displayname');
@@ -127,6 +119,30 @@ export class CodeGenerationUnderstandingAgent extends ApplicationController {
                     }
                 }
             }
+        });*/
+        this.components.functionalityCoding?.on('data', (data: any) => {
+            // @@todo here
+            const codegenerationquery = JSON.parse(data.message.toString());
+            const objectName = codegenerationquery.objectname;
+            const description = codegenerationquery.data;
+            
+            console.log(objectName);
+            console.log(description);
+            let messageToSend = "The Unity game object to attach the script is a " + objectName + "." + description + ".";
+            
+            var threshold = 80; //for filtering useless responses
+            if (messageToSend.length != 0 && messageToSend.length > threshold && this.isGenerating == false) {
+                // Remove all newlines from the response
+                messageToSend = messageToSend.replace(/(\r\n|\n|\r)/gm, '');
+
+                if (messageToSend.trim()) {
+                    const message = ('Query:: ' + messageToSend).trim();
+                    this.log(message);
+
+                    this.components.codeGenerationService?.sendToChildProcess('default', messageToSend + '\n');
+                }
+                
+            }
         });
 
         // Step 3: When we receive a response from the text generation service, we send it to the text to speech service
@@ -139,7 +155,7 @@ export class CodeGenerationUnderstandingAgent extends ApplicationController {
                 console.log(" -> Code:: " + response);
                 const cleaned_response = response.slice(1);
                 
-                this.scene.send(94, {
+                this.scene.send(99, {
                         type: "CodeGenerated",
                         peer: identifier,
                         data: cleaned_response,
