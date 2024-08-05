@@ -1,0 +1,1 @@
+This example start by selecting an object with the interactor ray, click the selection (on desktop shift+click) and waiting for a menu of actions. Then click the action to get the code.

@@ -11,6 +11,11 @@ using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
 using UnityEngine.UI;
 using static System.Net.Mime.MediaTypeNames;
+using System.Reflection;
+using Microsoft.CodeAnalysis;
+using System.Linq;
+using RoslynCSharp.Compiler;
+using Org.BouncyCastle.Bcpg;
 
 public class TestRoslyn : MonoBehaviour
 {
@@ -18,6 +23,7 @@ public class TestRoslyn : MonoBehaviour
     private string activeCSharpSource = null;
     private ScriptProxy activeCrawlerScript = null;
     private ScriptDomain domain = null;
+    public ModelGenerationFromPrimitivesManager manager;
     // Start is called before the first frame update
 
     /*public HandController handController; //only for debug purpose
@@ -41,16 +47,66 @@ public class TestRoslyn : MonoBehaviour
 
     void Start()
     {
+        cSharpSource = @"
+            using UnityEngine;
+            using System.Collections.Generic;
+
+            public class RedCastle : MonoBehaviour
+            {
+                void Start()
+                {
+                    GameObject redCastle = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                    redCastle.name = ""RedCastle"";
+
+                    string uniqueID = GenerateUniqueID();
+                    ObjectsTable.AddGameObject(uniqueID, redCastle);
+                }
+
+                void Update()
+                {
+                    //Destroy(this);
+                }
+
+                string GenerateUniqueID()
+                {
+                    List<string> existingIDs = ObjectsTable.GetAllIDs();
+                    string newID = ""RedCastle_"" + Random.Range(1000, 9999).ToString();
+
+                    while (existingIDs.Contains(newID))
+                    {
+                        newID = ""RedCastle_"" + Random.Range(1000, 9999).ToString();
+                    }
+
+                    return newID;
+                }
+            }";
+            
+
         // Create the domain
         domain = ScriptDomain.CreateDomain("myDom", true);
+        //string objectsTableAssemblyPath = ObjectsTable.GetAssemblyPath(typeof(ObjectsTable));
+        //Debug.Log("ObjectsTable assembly path: " + objectsTableAssemblyPath);
+        //IMetadataReferenceProvider objectsTableAssemblyReference = new AssemblyReferenceFromFile(objectsTableAssemblyPath);
+        //Debug.Log("Reference created " + objectsTableAssemblyReference.ToString());
 
         // Add assembly references
         foreach (AssemblyReferenceAsset reference in assemblyReferences)
+        {
             domain.RoslynCompilerService.ReferenceAssemblies.Add(reference);
+            Debug.Log("ref " + reference.AssemblyPath);
+        }
+            
+
+        Debug.Log("N of references after GUI " + domain.RoslynCompilerService.ReferenceAssemblies.Count);
+        
+        //domain.RoslynCompilerService.ReferenceAssemblies.Add(objectsTableAssemblyReference);
+        //Debug.Log("N of references after runtime add " + domain.RoslynCompilerService.ReferenceAssemblies.Count);
 
         domain.InitializeCompilerService();
-
+        Debug.Log("Roslyn Loaded OK");
         //handController.TriggerPress.AddListener(showCodePanel); //for debug
+        RunCode(this.gameObject);
+        Debug.Log("Roslyn run OK");
     }
 
     // Update is called once per frame
@@ -98,7 +154,7 @@ public class TestRoslyn : MonoBehaviour
     {
         // Get the C# code from the input field
         //cSharpSource = "using UnityEngine;\r\n\r\npublic class ColorObject : MonoBehaviour\r\n{\r\n    private void Start()\r\n    {\r\n        // Create a new material with the desired color\r\n        Material material = new Material(Shader.Find(\"Standard\"));\r\n        material.color = Color.red;\r\n\r\n        // Assign the new material to the object\'s Renderer component\r\n        Renderer renderer = GetComponent<Renderer>();\r\n        if (renderer != null)\r\n        {\r\n            renderer.material = material;\r\n        }\r\n    }\r\n}\n\n";
-
+        
         // Dont recompile the same code
         if (activeCSharpSource != cSharpSource)
         {
@@ -122,6 +178,9 @@ public class TestRoslyn : MonoBehaviour
                 if (p != null)
                 {
                     Debug.Log("Created instance");
+                } else
+                {
+                    Debug.Log("Failed to create instance");
                 }
 
 
@@ -139,6 +198,8 @@ public class TestRoslyn : MonoBehaviour
 
         //display the code
         //text.GetComponent<UnityEngine.UI.Text>().text = cSharpSource; //debug
+        manager.TakeAndSendResults();
+
     }
 
     

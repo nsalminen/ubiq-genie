@@ -1,0 +1,32 @@
+{
+  "name": "Virtual Assistant",
+  "roomGuid": "6765c52b-3ad6-4fb0-9030-2c9a05dc4731",
+  "roomserver": {
+    "joinExisting": true,
+    "uri": "192.168.0.50",
+    "tcp": {
+      "port": 8009
+    },
+    "wss": {
+      "port": 8010,
+      "cert": "./certs/cert.pem",
+      "key": "./certs/key.pem"
+    }
+  },
+  "status": {
+    "port": 8011,
+    "cert": "./certs/cert.pem",
+    "key": "./certs/key.pem",
+    "apikeys": []
+  },
+  "iceservers": [
+    {
+      "uri": "stun:stun.l.google.com:19302"
+    }
+  ],
+  "preprompt": "write a script in C# for Unity, so a class that inherits from MonoBehaviour. Need Only a start function that implements the code, and an update where in the update you immediately destroy the component. In your answer always write code between tag ```csharp and tag ```",
+  "prompt_suffix": "In start you put the creation of the primitive or primitives to generate the model. You need then to call also the function ObjectsTable.AddGameObject(id, gameobject) in start function where id is a uniuqe string that need to be different from the ids and you call ObjectsTable.GetAllIDs() that returns a List<string> to be user you do not clash with IDs, and gameobject is the create primitive. Put also 'using System.Collections.Generic' at the beginning of the script",
+  "evaluation_prompt": "Is the object in the image classified as this object?",
+  "evaluation_prompt_suffix": "respond with a value, considering that it needs to be classified correctly with a score between 0 to 100. It is good if it is over 80. If it is lower than 80, create a description for helping to improve it.",
+  "configurationComplete": true
+}

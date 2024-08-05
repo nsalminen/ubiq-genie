@@ -1,7 +1,7 @@
 # Multi-Party Conversational Agent Sample
 
 This guide provides instructions on using the Ubiq-Genie framework to create an application that enables collaborative interaction with a conversational agent in a shared environment. The agent recognizes users present in the room, responds to their queries, faces the speaker during the interaction, and uses simple gestures while communicating.
-This example start by selecting an object with the interactor ray, click the selection (on desktop shift+click) and waiting for a menu of actions. Then click the action to get the code.
+
 ## Prerequisites
 
 An Azure Speech Services subscription is needed for this sample. You can create a free subscription [here](https://azure.microsoft.com/en-us/try/cognitive-services/?api=speech-services).
@@ -15,13 +15,13 @@ Follow these steps to run the sample:
 
 ### Server (Node.js)
 
-1. Open a terminal and navigate to the `Node/apps/codegeneratorunderstanding_agent` directory. Ensure that your conda or venv environment is activated.
+1. Open a terminal and navigate to the `Node/apps/generative3DmodelbyCode_agent` directory. Ensure that your conda or venv environment is activated.
 2. Execute the below command, which will guide you through the configuration process, including setting up the server information and the required environment variables. Configuration will only be run the first time you start the application. Ensure that you apply the same server configuration to the Unity client (in `/Unity/Assets/ServerConfig.asset`).
 
     ```bash
-    npm start codegeneratorunderstanding_agent
+    npm start generative3DmodelbyCode_agent
     ```
-If you need to reconfigure the application, you can run `npm start codegeneratorunderstanding_agent configure`. You may also manually configure the application by changing the `config.json` and `.env` files. The `config.json` file contains the server configuration, while the `.env` file contains the environment variables for the Azure Speech Services subscription key and region (`SPEECH_KEY` and `SPEECH_REGION`) and the OpenAI API key (`OPENAI_API_KEY`).
+If you need to reconfigure the application, you can run `npm start generative3DmodelbyCode_agent configure`. You may also manually configure the application by changing the `config.json` and `.env` files. The `config.json` file contains the server configuration, while the `.env` file contains the environment variables for the Azure Speech Services subscription key and region (`SPEECH_KEY` and `SPEECH_REGION`) and the OpenAI API key (`OPENAI_API_KEY`).
 
 ### Client (Unity)
 
